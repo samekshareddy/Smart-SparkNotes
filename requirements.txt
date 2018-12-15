@@ -1,0 +1,6 @@
+CoffeeScript
+Flask
+pdfminer
+nltk
+pyenchant
+beautifulsoup4
