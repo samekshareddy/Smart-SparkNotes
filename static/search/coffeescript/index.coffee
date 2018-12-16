@@ -13,6 +13,7 @@ do_summary = () ->
   query = $("#query_text").val()
   start = $("#start").val()
   isFull = false
+  length = $("#len").val() * 1
 
 
   if $('#isFull').hasClass 'checked'
@@ -27,7 +28,8 @@ do_summary = () ->
       data: JSON.stringify
         query: query,
         start: start,
-        isFull: isFull
+        isFull: isFull,
+        length: length
       success: (data, stat, xhr) -> print_results data
       failure: (axhr, stat, err) ->
         $("#search_results_list").append("<li>Something bad happened!</li>")
