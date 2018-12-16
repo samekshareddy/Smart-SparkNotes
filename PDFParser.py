@@ -9,6 +9,8 @@ import json
 
 class PDFParser:
 
+	variations = {}
+
 	htmlContent = None
 
 	def convert_html(self,path):
@@ -87,12 +89,20 @@ class PDFParser:
 			size = ele[data][1]
 			font = ele[data][2]
 
-			print(text)
+			# print(text)
 
-			if heading in text:
+			if heading.lower() in text.lower():
 				fontSize = size
 				index = data
 				fontFamily = font
+
+			if heading in self.variations:
+				for h in self.variations[heading]:
+					if h.lower() in text.lower():
+						fontSize = size
+						index = data
+						fontFamily = font
+
 
 		content = ""
 		contentWords = []
@@ -139,22 +149,28 @@ class PDFParser:
 
 	def readPDF(self, request):
 		print(request)
-		start = request['start']
-		end = request['end']
+		headings = request['start']
+		
+		isFull = request['isFull']
+
+		self.variations['abstract'] = [ "a b s t r a c t" ]
 		
 		isFull = False
-		isEnd = True
+		isEnd = False
 
-		if start == "":
+		if headings == "":
 			isFull = True
 		
-		if end == "":
-			isEnd = False
+		# if end == "":
+		# 	isEnd = False
+
+
 		
 		elements = self.get_content(self.htmlContent)
 		contentDict = {}
 
-		contentDict["content"] = self.preprocessContent(self.get_headings(elements,start,isFull,isEnd,end))
+		for heading in headings.split(','):
+			contentDict[heading] = self.preprocessContent(self.get_headings(elements,heading,isFull,isEnd,""))
 		
 
 		return json.dumps(contentDict)
