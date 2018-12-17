@@ -119,7 +119,7 @@ class ScoreGenerator(object):
 
         word_vec_mags = np.linalg.norm(word_vecs, axis=1)
 
-        sim = np.transpose(cos_sim_nominator / word_vec_mags) / word_vec_mags 
+        sim = np.transpose(cos_sim_nominator / word_vec_mags) / word_vec_mags
 
         return sim
 
@@ -199,7 +199,7 @@ class ScoreGenerator(object):
             
 
 
-        return intersection_total / (len(self.title)+len(sentence.words))
+        return intersection_total / (len(self.title)+len(sentence.words) + 1)
 
     def _sentence_length(self, item, i):
         """
@@ -212,7 +212,7 @@ class ScoreGenerator(object):
         """
         sentence = self.document[item].sentences[i]
 
-        return len(sentence.words) / len(self.longest_sentence[item].words)
+        return len(sentence.words) / len(self.longest_sentence[item].words + 1)
 
     def _sentence_position(self, item, i):
         '''
@@ -228,7 +228,7 @@ class ScoreGenerator(object):
         # find total sentence number
         total_sentence_num = len(self.document[item].sentences)
 
-        return (total_sentence_num - i) / total_sentence_num
+        return (total_sentence_num - i) / (total_sentence_num+1)
 
     def _inter_sentence_similarity(self, item, i, j):
         '''
@@ -256,7 +256,7 @@ class ScoreGenerator(object):
                         word2_id = self.word_to_id[word2]
                         intersection_total += self.word_sim[word1_id][word2_id]
 
-        return intersection_total / (len(sentence1.words) + len(sentence2.words))
+        return intersection_total / (len(sentence1.words) + len(sentence2.words) + 1)
 
     def _proper_nouns(self, item, i):
         '''
@@ -278,7 +278,7 @@ class ScoreGenerator(object):
             if tag[1] == 'NNP':
                 proper_noun_num += 1
 
-        return proper_noun_num / sentence_length
+        return proper_noun_num / (sentence_length+1)
 
     def _thematic_word(self, item, i):
         '''
@@ -322,7 +322,7 @@ class ScoreGenerator(object):
             if self._is_number(word):
                 num_numerical_data += 1
 
-        return num_numerical_data / len(sentence.words)
+        return num_numerical_data / (len(sentence.words)+1)
     
     def _keywords(self, item, i):
         '''
@@ -351,7 +351,7 @@ class ScoreGenerator(object):
 
             total += sentence.words.count(keyword) * keyword_weight
 
-        return np.dot(total, self.keywords_weights.transpose()) / len(sentence.words)
+        return np.dot(total, self.keywords_weights.transpose()) / (len(sentence.words)+1)
 
     def _calculate(self, item, i):
         '''
@@ -374,7 +374,7 @@ class ScoreGenerator(object):
         for j in range(len(self.document[item].sentences)):
             if i != j:
                 total += self._inter_sentence_similarity(item, i, j)
-        scores[3] = total / (len(self.document[item].sentences) - 1) 
+        scores[3] = total / (len(self.document[item].sentences) + 1) 
 
         scores[4] = self._proper_nouns(item, i)
         scores[5] = self._thematic_word(item, i)
@@ -462,7 +462,7 @@ class ScoreGenerator(object):
                         intersection_total += query_word_sim[keyword_id][word_id]
 
             
-        return intersection_total / (len(query)+len(sentence.words))
+        return intersection_total / (len(query)+len(sentence.words) + 1)
 
 
     def calculate(self):

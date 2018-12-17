@@ -6,6 +6,7 @@ import json
 import time
 import numpy as np
 import math
+
 import gensim 
 
 from gensim.test.utils import common_texts
@@ -28,11 +29,11 @@ class Summarizer(object):
     thematic_threshold - threhold for thematic words for score generator
     '''
 
-    def __init__(self, paper, num_topics, itertations, title, thematic_threshold, desired_summary_sen):
+    def __init__(self, doc_name, num_topics, itertations, title, thematic_threshold, desired_summary_sen):
         self.num_topics = num_topics
 
-        # with open(doc_name) as f:
-        #     paper = json.load(f)
+        with open(doc_name) as f:
+            paper = json.load(f)
 
         # initialize topic model
         self.t = Topics(paper, num_topics, itertations)
@@ -41,7 +42,7 @@ class Summarizer(object):
         self.t.get_model()
         # the topics distribution is saved in t.topics_dict
 
-        # self.t.get_coverage()
+        self.t.get_coverage()
 
         # initialize score generator
 
@@ -99,20 +100,73 @@ class Summarizer(object):
             
         self.ns = np.array(self.ns) * desired_summary_sen
 
-        candidate_summary = ''
+        candidate_summary = '...'
 
-        for rank_index in range(len(rankings)):
-            sentence_ranking = rankings[rank_index]
-            n = self.ns[rank_index]
-            if n != 0 and doc_keys[rank_index] != 'Abstract':
-            
-                d = self.sg.document[doc_keys[rank_index]]
+        sections = ['abstract', 'intro', 'conclusion']
+
+        section_key = defaultdict()
+        section_idx = defaultdict()
+
+        for key_idx in range(len(doc_keys)):
+            key = doc_keys[key_idx]
+            for section in sections:
+                if section in key.lower():
+                    section_key[section] = key
+                    section_idx[section] = key_idx
+
+        sen_num = 0
+        while (sen_num < self.desired_summary_sen):
+
+            for section in section_key:
+                if section != 'abstract':
+                    section_id = section_idx[section]
+                    sentence_ranking = rankings[section_id]
+                    n = self.ns[section_id]
+                    n = math.ceil(n)
+
+                    if (sen_num + n) > self.desired_summary_sen:
+                        n = max(0, min(n, self.desired_summary_sen - sen_num))
+
+                    if n != 0:
+                        d = self.sg.document[doc_keys[section_id]]
+                        display_idxs = np.sort(sentence_ranking[-n:])
+
+                        for sen_idx in display_idxs:
+                            sen = self.sg.document[doc_keys[section_id]].sentences[sen_idx]
+                            s = str(sen)
+                            s = s.split(' ', 1)
+                            word1 = s[0].capitalize()
+                            rest_sen = s[1]
+
+                            sen = word1 + rest_sen
+                            candidate_summary += str(sen)+ ' '
+                            sen_num += n
+            break
+
+        while (sen_num < self.desired_summary_sen):
+            for rank_index in range(len(rankings)):
+                sentence_ranking = rankings[rank_index]
+                n = self.ns[rank_index]
                 n = math.ceil(n)
-                display_idxs = np.sort(sentence_ranking[-n:])
+                if (sen_num + n) > self.desired_summary_sen:
+                    n =max(0, min(n, self.desired_summary_sen - sen_num))
 
-                for sen_idx in display_idxs:
-                    sen = self.sg.document[doc_keys[rank_index]].sentences[sen_idx]
-                    candidate_summary += str(sen)+ ' '
+                if n != 0 and doc_keys[rank_index] not in list(section_idx.values()):
+                
+                    d = self.sg.document[doc_keys[rank_index]]
+                    display_idxs = np.sort(sentence_ranking[-n:])
+
+                    for sen_idx in display_idxs:
+                        sen = self.sg.document[doc_keys[rank_index]].sentences[sen_idx]
+                        s = str(sen)
+                        s = s.split(' ', 1)
+                        word1 = s[0].capitalize()
+                        rest_sen = s[1]
+
+                        sen = word1 + rest_sen
+                        candidate_summary += str(sen)+ ' '
+                        sen_num += n
+            break
 
         return candidate_summary
     def retrieve_query_summary(self, query):
@@ -134,19 +188,73 @@ class Summarizer(object):
             sentence_ranking = np.argsort(sentence_scores)
             query_rankings.append(sentence_ranking) 
             
-        query_candidate_summary = ''
-        for rank_index in range(len(query_rankings)):
-            sentence_ranking = query_rankings[rank_index]
-            n = self.ns[rank_index]
-            if n != 0 and doc_keys[rank_index] != 'Abstract':
-            
-                d = self.sg.document[doc_keys[rank_index]]
+        query_candidate_summary = '...'
+
+        sections = ['abstract', 'intro', 'conclusion']
+
+        section_key = defaultdict()
+        section_idx = defaultdict()
+
+        for key_idx in range(len(doc_keys)):
+            key = doc_keys[key_idx]
+            for section in sections:
+                if section in key.lower():
+                    section_key[section] = key
+                    section_idx[section] = key_idx
+
+        sen_num = 0
+        while (sen_num < self.desired_summary_sen):
+
+            for section in section_key:
+                if section != 'abstract':
+                    section_id = section_idx[section]
+                    sentence_ranking = query_rankings[section_id]
+                    n = self.ns[section_id]
+                    n = math.ceil(n)
+
+                    if (sen_num + n) > self.desired_summary_sen:
+                        n = max(0, min(n, self.desired_summary_sen - sen_num))
+
+                    if n != 0:
+                        d = self.sg.document[doc_keys[section_id]]
+                        display_idxs = np.sort(sentence_ranking[-n:])
+
+                        for sen_idx in display_idxs:
+                            sen = self.sg.document[doc_keys[section_id]].sentences[sen_idx]
+                            s = str(sen)
+                            s = s.split(' ', 1)
+                            word1 = s[0].capitalize()
+                            rest_sen = s[1]
+
+                            sen = word1 + rest_sen
+                            query_candidate_summary += str(sen)+ ' '
+                            sen_num += n
+            break
+
+        while (sen_num < self.desired_summary_sen):
+            for rank_index in range(len(query_rankings)):
+                sentence_ranking = query_rankings[rank_index]
+                n = self.ns[rank_index]
                 n = math.ceil(n)
-                display_idxs = np.sort(sentence_ranking[-n:])
+                if (sen_num + n) > self.desired_summary_sen:
+                    n =max(0, min(n, self.desired_summary_sen - sen_num))
 
+                if n != 0 and doc_keys[rank_index] not in list(section_idx.values()):
+                
+                    d = self.sg.document[doc_keys[rank_index]]
+                    display_idxs = np.sort(sentence_ranking[-n:])
 
-                for sen_idx in display_idxs:
-                    sen = self.sg.document[doc_keys[rank_index]].sentences[sen_idx]
-                    query_candidate_summary += str(sen)+ ' '
+                    for sen_idx in display_idxs:
+                        sen = self.sg.document[doc_keys[rank_index]].sentences[sen_idx]
+                        s = str(sen)
+                        s = s.split(' ', 1)
+                        word1 = s[0].capitalize()
+                        rest_sen = s[1]
+
+                        sen = word1 + rest_sen
+                        query_candidate_summary += str(sen)+ ' '
+                        sen_num += n
+            break
+
 
         return query_candidate_summary
