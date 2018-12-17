@@ -19,7 +19,7 @@ do_summary = () ->
   if $('#isFull').hasClass 'checked'
     isFull = true
 
-  if query.length != 0
+  if true
     $("#search_results_list").empty()
     $.ajax "get-pdf",
       type: "POST"

@@ -18,12 +18,18 @@ htmlContent = None
 
 def root():
     if request.method == 'POST':
+
+        basedir = os.path.abspath(os.path.dirname(__file__))
+
+        # file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
+        
         f = request.files['file']
+        
         filename = secure_filename(f.filename)
       
-        f.save(os.path.join(UPLOAD_FOLDER, filename))
+        f.save(os.path.join(basedir,UPLOAD_FOLDER, filename))
 
-        filePath = os.path.join(UPLOAD_FOLDER, filename)
+        filePath = os.path.join(basedir,UPLOAD_FOLDER, filename)
 
         app.PDFParser.convert_html(filePath)
 
