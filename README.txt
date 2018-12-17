@@ -10,6 +10,7 @@ python -m textblob.download_corpora
 4- download nltks's wordnet and stopwords:
 nltk.download('wordnet')
 nltk.download('stopwords')
+nltk.download(' averaged_perceptron_tagger')
 
 5- To start the server run,
 python UI.py
