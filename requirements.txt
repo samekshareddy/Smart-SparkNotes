@@ -1,6 +1,5 @@
 CoffeeScript
 Flask
-pdfminer
+pdfminer.six
 nltk
-pyenchant
 beautifulsoup4
