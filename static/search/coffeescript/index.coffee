@@ -38,5 +38,5 @@ do_summary = () ->
 
 print_results = (result) ->
   console.log(result)
-  html = "<p>#{result["introduction"]}"
+  html = "<p>#{result["1. Introduction"]}"
   $("#search_results_list").append(html)

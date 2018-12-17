@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import re
 from nltk.corpus import wordnet
 from nltk.corpus import words
-import enchant
 import json
+from nltk.corpus import wordnet
 
 class PDFParser:
 
@@ -43,17 +43,28 @@ class PDFParser:
 		content = content.replace('\n', ' ').replace('\r', '')
 
 		references = re.findall(re.compile("\[[\d,]+\]"), content)
+
+		emails = re.findall(re.compile("\s.+@.+\s"), content)
 		
 		contWords = re.findall(re.compile("[a-zA-Z]+-\s[a-zA-Z]+[,\)]|[a-zA-Z]+-\s[a-zA-Z]+\s"), content)
 
-		d = enchant.Dict("en_US")
+		# d = enchant.Dict("en_US")
 
 		for word in contWords:
 			word = word[0:-1]
 			newWord = word.replace("- ","")
 
-			if d.check(newWord.strip()):
+			# if d.check(newWord.strip()):
+			if len(wordnet.synsets(newWord.strip())) != 0:
 				content = content.replace(word,newWord)
+
+
+		for email in emails:
+			print(email)
+			content = content.replace(email,"")
+
+		for reference in references:
+			content = content.replace(reference,"")
 		
 		
 		return content
@@ -68,9 +79,40 @@ class PDFParser:
 
 		return ele
 
-	def get_headings(self,ele,heading,isFull,nextHeading = False, nextHeadingText = None):
 
-		print(len(ele))
+	def getAllHeadings(self,ele):
+		headings = []
+
+		fontSize = None
+		index = None
+		fontFamily = None
+
+		for data in range(len(ele)):
+			text = ele[data][0]
+			size = ele[data][1]
+			font = ele[data][2]
+
+			# print(text)
+
+			if "introduction" in text.lower():
+				fontSize = size
+				index = data
+				fontFamily = font
+
+		
+		for data in range(len(ele)):
+			text = ele[data][0]
+			size = ele[data][1]
+			font = ele[data][2]
+
+			if size == fontSize and font == fontFamily:
+				headings.append(text)
+
+		return headings
+
+
+
+	def get_headings(self,ele,heading,isFull,nextHeading = False, nextHeadingText = None):
 		
 		fontSize = None
 		index = None
@@ -124,7 +166,7 @@ class PDFParser:
 				if nextHeadingText in ele[data][0]:
 					break
 
-			d = enchant.Dict("en_US")
+			# d = enchant.Dict("en_US")
 
 			
 			if len(contentWords) == 0:
@@ -134,7 +176,8 @@ class PDFParser:
 				word = contentWords[len(contentWords) - 1] + ele[data][0].split()[0]
 
 				
-				if d.check(word.strip()):
+				# if d.check(word.strip()):
+				if len(wordnet.synsets(word.strip())) != 0:
 					content += ele[data][0]
 
 				else:
@@ -148,29 +191,33 @@ class PDFParser:
 		return content
 
 	def readPDF(self, request):
-		print(request)
-		headings = request['start']
+		
+		start = request['start']
+
+		headings = start.split(',')
 		
 		isFull = request['isFull']
 
 		self.variations['abstract'] = [ "a b s t r a c t" ]
 		
-		isFull = False
 		isEnd = False
 
-		if headings == "":
-			isFull = True
+
+		elements = self.get_content(self.htmlContent)
+		contentDict = {}
+
+		if isFull:
+			headings = self.getAllHeadings(elements)
+			print(headings)
 		
 		# if end == "":
 		# 	isEnd = False
 
 
 		
-		elements = self.get_content(self.htmlContent)
-		contentDict = {}
 
-		for heading in headings.split(','):
-			contentDict[heading] = self.preprocessContent(self.get_headings(elements,heading,isFull,isEnd,""))
+		for heading in headings:
+			contentDict[heading] = self.preprocessContent(self.get_headings(elements,heading,False,isEnd,""))
 		
 
 		return json.dumps(contentDict)
