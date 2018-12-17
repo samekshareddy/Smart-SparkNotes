@@ -11,6 +11,7 @@ import coffeescript
 from PDFParser import PDFParser
 
 UPLOAD_FOLDER = '/tmp/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 filePath = ""
 htmlContent = None
 
@@ -19,19 +20,15 @@ htmlContent = None
 def root():
     if request.method == 'POST':
 
-        basedir = os.path.abspath(os.path.dirname(__file__))
+        file = request.files['file']
 
-        # file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
+        filename = secure_filename(file.filename)
+
+        destination = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
-        f = request.files['file']
-        
-        filename = secure_filename(f.filename)
-      
-        f.save(os.path.join(basedir,UPLOAD_FOLDER, filename))
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        filePath = os.path.join(basedir,UPLOAD_FOLDER, filename)
-
-        app.PDFParser.convert_html(filePath)
+        app.PDFParser.convert_html(destination)
 
         return '', 204
 
