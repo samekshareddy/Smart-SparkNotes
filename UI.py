@@ -24,6 +24,9 @@ def root():
 
         filename = secure_filename(file.filename)
 
+        if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'])):
+            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER']))
+
         destination = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
