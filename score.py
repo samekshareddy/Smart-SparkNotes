@@ -119,7 +119,7 @@ class ScoreGenerator(object):
 
         word_vec_mags = np.linalg.norm(word_vecs, axis=1)
 
-        sim = np.transpose(cos_sim_nominator / word_vec_mags) / word_vec_mags
+        sim = np.transpose(cos_sim_nominator / word_vec_mags) / word_vec_mags 
 
         return sim
 
@@ -179,7 +179,6 @@ class ScoreGenerator(object):
         Return title feature score
         score = |Intersection (keywords of sentence, keywords of document)| 
                 / |Union (keywords of sentence, keywords of document)|
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -205,20 +204,18 @@ class ScoreGenerator(object):
         """
         Return sentence length score
         score = sentence_length / longest_sentence_length
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
         """
         sentence = self.document[item].sentences[i]
 
-        return len(sentence.words) / len(self.longest_sentence[item].words + 1)
+        return len(sentence.words) / （len(self.longest_sentence[item].words) + 1）
 
     def _sentence_position(self, item, i):
         '''
         Return sentence position score
         score = (total_sentence_num - i) / total_sentence_num
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -228,14 +225,13 @@ class ScoreGenerator(object):
         # find total sentence number
         total_sentence_num = len(self.document[item].sentences)
 
-        return (total_sentence_num - i) / (total_sentence_num+1)
+        return (total_sentence_num - i) / （total_sentence_num+1）
 
     def _inter_sentence_similarity(self, item, i, j):
         '''
         Return inter sentence similarity score
         score = |Intersection (words of sentence, words of other sentence)| 
                 / |Union (words of sentence, words of other sentence)|
-
         Parameter: 
         i - sentence index in paragraph
         j - other sentence index in paragraph 
@@ -278,7 +274,7 @@ class ScoreGenerator(object):
             if tag[1] == 'NNP':
                 proper_noun_num += 1
 
-        return proper_noun_num / (sentence_length+1)
+        return proper_noun_num / （sentence_length+1）
 
     def _thematic_word(self, item, i):
         '''
@@ -310,7 +306,6 @@ class ScoreGenerator(object):
         '''
         Return numerical data score
         score = number of numerical data / length of sentence\
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -322,13 +317,12 @@ class ScoreGenerator(object):
             if self._is_number(word):
                 num_numerical_data += 1
 
-        return num_numerical_data / (len(sentence.words)+1)
+        return num_numerical_data / （len(sentence.words)+1）
     
     def _keywords(self, item, i):
         '''
         Return keyword score
         score = sum of all keywords {number of keyword * weight of keyword} / num_words in sentence
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -351,12 +345,11 @@ class ScoreGenerator(object):
 
             total += sentence.words.count(keyword) * keyword_weight
 
-        return np.dot(total, self.keywords_weights.transpose()) / (len(sentence.words)+1)
+        return np.dot(total, self.keywords_weights.transpose()) / （len(sentence.words)+1）
 
     def _calculate(self, item, i):
         '''
         Return total score of a sentence 
-
         Parameters:
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -437,7 +430,6 @@ class ScoreGenerator(object):
     def _query_word(self, item, i, query):
         '''
         Return sentence score based on query word
-
         Parameter: 
         i - sentence index in paragraph
         item - the paragraph in the paper
@@ -497,7 +489,3 @@ class ScoreGenerator(object):
             total_scores.append(sentence_scores)
 
         return total_scores
-
-
-
-

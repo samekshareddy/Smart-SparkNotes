@@ -6,7 +6,6 @@ import json
 import time
 import numpy as np
 import math
-
 import gensim 
 
 from gensim.test.utils import common_texts
@@ -29,11 +28,11 @@ class Summarizer(object):
     thematic_threshold - threhold for thematic words for score generator
     '''
 
-    def __init__(self, doc_name, num_topics, itertations, title, thematic_threshold, desired_summary_sen):
+    def __init__(self, paper, num_topics, itertations, title, thematic_threshold, desired_summary_sen):
         self.num_topics = num_topics
 
-        with open(doc_name) as f:
-            paper = json.load(f)
+        # with open(doc_name) as f:
+        #     paper = json.load(f)
 
         # initialize topic model
         self.t = Topics(paper, num_topics, itertations)
@@ -42,7 +41,7 @@ class Summarizer(object):
         self.t.get_model()
         # the topics distribution is saved in t.topics_dict
 
-        self.t.get_coverage()
+        # self.t.get_coverage()
 
         # initialize score generator
 
@@ -69,6 +68,7 @@ class Summarizer(object):
         self.sg = ScoreGenerator(title.lower(), paper, thematic_threshold, keywords, keywords_weights, score_weights)
 
         self.desired_summary_sen = desired_summary_sen
+        
     # function to retireve summary of a paper based on weights
     def retrieve_summary(self):
 
@@ -169,6 +169,7 @@ class Summarizer(object):
             break
 
         return candidate_summary
+
     def retrieve_query_summary(self, query):
         doc_keys = list(self.sg.document.keys())
         
