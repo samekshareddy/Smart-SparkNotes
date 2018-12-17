@@ -21,6 +21,7 @@ do_summary = () ->
 
   if true
     $("#search_results_list").empty()
+    $("#search_results_list").append("<li> Please wait for the summary </li>")
     $.ajax "get-pdf",
       type: "POST"
       contentType: "application/json; charset=utf-8"
@@ -38,5 +39,6 @@ do_summary = () ->
 
 print_results = (result) ->
   console.log(result)
-  html = "<p>#{result["1. Introduction"]}"
+  html = "<p>#{result["content"]}"
+  $("#search_results_list").empty()
   $("#search_results_list").append(html)

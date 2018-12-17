@@ -37,6 +37,25 @@ body {
     overflow-y:scroll;
 }
 
+#search_results
+{
+  display: block; 
+  width: auto; 
+  height: auto; 
+  overflow: visible;
+  border: 1px solid black;
+
+}
+
+
+#search_results_list
+{
+  height: 300px;
+  width: 100%;
+  overflow: auto;
+}
+
+
 
 /* Custom page CSS
 -------------------------------------------------- */

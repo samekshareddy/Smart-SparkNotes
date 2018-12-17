@@ -6,6 +6,7 @@ from nltk.corpus import wordnet
 from nltk.corpus import words
 import json
 from nltk.corpus import wordnet
+from smartnotes import SmartNote
 
 class PDFParser:
 
@@ -13,7 +14,15 @@ class PDFParser:
 
 	htmlContent = None
 
+	info = None
+
+	elements = None
+
+	headings = []
+
+
 	def convert_html(self,path):
+		self.info = self.get_info(path)
 		htmlPath = path.split('.')[0] + ".html"
 		args2 = ['pdf2txt.py','-t', 'html', path]
 
@@ -24,6 +33,10 @@ class PDFParser:
 			output += line.decode("utf-8")
 
 		self.htmlContent = output
+		
+		self.elements = self.get_content(self.htmlContent)
+
+		self.headings = self.getAllHeadings(self.elements)
 	
 		return output
 
@@ -38,6 +51,8 @@ class PDFParser:
 	    producer = info.producer
 	    subject = info.subject
 	    title = info.title
+
+	    return info;
 
 	def preprocessContent(self,content):
 		content = content.replace('\n', ' ').replace('\r', '')
@@ -60,7 +75,7 @@ class PDFParser:
 
 
 		for email in emails:
-			print(email)
+			# print(email)
 			content = content.replace(email,"")
 
 		for reference in references:
@@ -173,15 +188,15 @@ class PDFParser:
 				content = ele[data][0]
 
 			else:
-				word = contentWords[len(contentWords) - 1] + ele[data][0].split()[0]
+				# word = contentWords[len(contentWords) - 1] + ele[data][0].split()[0]
 
 				
-				# if d.check(word.strip()):
-				if len(wordnet.synsets(word.strip())) != 0:
-					content += ele[data][0]
+				# # if d.check(word.strip()):
+				# if len(wordnet.synsets(word.strip())) != 0:
+				# 	content += ele[data][0]
 
-				else:
-					content += " " + ele[data][0];
+				# else:
+				content += " " + ele[data][0];
 
 			
 			contentWords.extend(content.split())
@@ -191,7 +206,7 @@ class PDFParser:
 		return content
 
 	def readPDF(self, request):
-		
+
 		start = request['start']
 
 		headings = start.split(',')
@@ -202,25 +217,28 @@ class PDFParser:
 		
 		isEnd = False
 
+		sm = SmartNote()
 
-		elements = self.get_content(self.htmlContent)
+
+		# elements = self.get_content(self.htmlContent)
 		contentDict = {}
 
 		if isFull:
-			headings = self.getAllHeadings(elements)
+			headings = self.getAllHeadings(self.elements)
 			print(headings)
 		
-		# if end == "":
-		# 	isEnd = False
-
-
-		
-
 		for heading in headings:
-			contentDict[heading] = self.preprocessContent(self.get_headings(elements,heading,False,isEnd,""))
+			contentDict[heading] = self.preprocessContent(self.get_headings(self.elements,heading,False,isEnd,""))
 		
 
-		return json.dumps(contentDict)
+		print(contentDict)
+		# paper =  json.dumps(contentDict)
+
+		summary = {}
+
+		summary["content"] = sm.getSummary(contentDict,self.info.title,request['length'],request['query'])
+
+		return json.dumps(summary)
 
 
 
