@@ -3,3 +3,5 @@ Flask
 pdfminer.six
 nltk
 beautifulsoup4
+spacy
+gensim
