@@ -19,6 +19,7 @@ python -m spacy download en
 
 
 Install textblob's corpora:
+
 python -m textblob.download_corpora
 
 Download nltks's wordnet and stopwords:

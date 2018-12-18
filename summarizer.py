@@ -136,9 +136,12 @@ class Summarizer(object):
                             s = str(sen)
                             s = s.split(' ', 1)
                             word1 = s[0].capitalize()
-                            rest_sen = s[1]
+                            rest_sen = ""
+                            if len(s) > 1:
+                                rest_sen = s[1]
 
-                            sen = word1 + rest_sen
+
+                            sen = word1 + " " +rest_sen
                             candidate_summary += str(sen)+ ' '
                             sen_num += n
             break
@@ -161,9 +164,11 @@ class Summarizer(object):
                         s = str(sen)
                         s = s.split(' ', 1)
                         word1 = s[0].capitalize()
-                        rest_sen = s[1]
+                        rest_sen = ""
+                        if len(s) > 1:
+                            rest_sen = s[1]
 
-                        sen = word1 + rest_sen
+                        sen = word1 + " " +  rest_sen
                         candidate_summary += str(sen)+ ' '
                         sen_num += n
             break
@@ -225,9 +230,12 @@ class Summarizer(object):
                             s = str(sen)
                             s = s.split(' ', 1)
                             word1 = s[0].capitalize()
-                            rest_sen = s[1]
+                            rest_sen = ""
+                            if len(s) > 1:
+                                rest_sen = s[1]
 
-                            sen = word1 + rest_sen
+
+                            sen = word1 + " " + rest_sen
                             query_candidate_summary += str(sen)+ ' '
                             sen_num += n
             break
@@ -250,9 +258,11 @@ class Summarizer(object):
                         s = str(sen)
                         s = s.split(' ', 1)
                         word1 = s[0].capitalize()
-                        rest_sen = s[1]
+                        rest_sen = ""
+                        if len(s) > 1:
+                            rest_sen = s[1]
 
-                        sen = word1 + rest_sen
+                        sen = word1 + " " + rest_sen
                         query_candidate_summary += str(sen)+ ' '
                         sen_num += n
             break

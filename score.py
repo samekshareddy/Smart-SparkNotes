@@ -196,9 +196,7 @@ class ScoreGenerator(object):
                         word_id = self.word_to_id[word]
                         intersection_total += self.word_sim[keyword_id][word_id]
             
-
-
-        return intersection_total / (len(self.title)+len(sentence.words) + 1)
+        return intersection_total/(len(self.title) + len(sentence.words) + 1)
 
     def _sentence_length(self, item, i):
         """
@@ -210,7 +208,7 @@ class ScoreGenerator(object):
         """
         sentence = self.document[item].sentences[i]
 
-        return len(sentence.words) / （len(self.longest_sentence[item].words) + 1）
+        return len(sentence.words)/(len(self.longest_sentence[item].words) + 1)
 
     def _sentence_position(self, item, i):
         '''
@@ -225,7 +223,8 @@ class ScoreGenerator(object):
         # find total sentence number
         total_sentence_num = len(self.document[item].sentences)
 
-        return (total_sentence_num - i) / （total_sentence_num+1）
+        return (total_sentence_num - i)/(total_sentence_num+1)
+
 
     def _inter_sentence_similarity(self, item, i, j):
         '''
@@ -274,7 +273,7 @@ class ScoreGenerator(object):
             if tag[1] == 'NNP':
                 proper_noun_num += 1
 
-        return proper_noun_num / （sentence_length+1）
+        return proper_noun_num/(sentence_length+1)
 
     def _thematic_word(self, item, i):
         '''
@@ -317,7 +316,7 @@ class ScoreGenerator(object):
             if self._is_number(word):
                 num_numerical_data += 1
 
-        return num_numerical_data / （len(sentence.words)+1）
+        return num_numerical_data/(len(sentence.words)+1)
     
     def _keywords(self, item, i):
         '''
@@ -345,7 +344,7 @@ class ScoreGenerator(object):
 
             total += sentence.words.count(keyword) * keyword_weight
 
-        return np.dot(total, self.keywords_weights.transpose()) / （len(sentence.words)+1）
+        return np.dot(total,self.keywords_weights.transpose()) / (len(sentence.words)+1)
 
     def _calculate(self, item, i):
         '''
