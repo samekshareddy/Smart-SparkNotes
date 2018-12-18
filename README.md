@@ -29,13 +29,20 @@ python -m textblob.download_corpora.
 
 #### Download nltks's wordnet and stopwords:  
 
-
 nltk.download('wordnet'). 
 
 nltk.download('stopwords'). 
 
 nltk.download(' averaged_perceptron_tagger'). 
 
+### Load Google word2vec model
+
+1. Download the model from https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit
+Note. This is a very large file (3.5 gb)
+
+2. Place this model file in the same folder as initialize.py
+
+3. Load the model with python initialize.py
 
 ### Running the tool
 
