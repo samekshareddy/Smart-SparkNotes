@@ -219,6 +219,7 @@ class PDFParser:
 
 		sm = SmartNote()
 
+		
 
 		# elements = self.get_content(self.htmlContent)
 		contentDict = {}
@@ -231,6 +232,7 @@ class PDFParser:
 			contentDict[heading] = self.preprocessContent(self.get_headings(self.elements,heading,False,isEnd,""))
 		
 
+		print(self.info.title)
 		print(contentDict)
 		# paper =  json.dumps(contentDict)
 

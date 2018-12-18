@@ -114,7 +114,8 @@ class Topics:
 			topic_dict = {}
 			for word_prob in distribution:
 				word_prob_ = word_prob.split('*')
-				topic_dict[word_prob_[1][1:-2]] = float(word_prob_[0])
+				if len(word_prob_) > 1:
+					topic_dict[word_prob_[1][1:-2]] = float(word_prob_[0])
 
 			self.topics_dict[topic_nb] = topic_dict
 

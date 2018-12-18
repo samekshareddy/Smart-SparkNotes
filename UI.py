@@ -38,7 +38,6 @@ def root():
     return app.send_static_file('index.html')
 
 
-
 @app.route('/get-pdf', methods=['POST'])
 def get_pdf():
 

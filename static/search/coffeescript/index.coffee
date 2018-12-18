@@ -15,7 +15,6 @@ do_summary = () ->
   isFull = false
   length = $("#len").val() * 1
 
-
   if $('#isFull').hasClass 'checked'
     isFull = true
 
