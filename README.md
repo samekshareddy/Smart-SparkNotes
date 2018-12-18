@@ -10,22 +10,24 @@ These instructions will get you a copy of the project up and running on your loc
 
 THE TOOL WORKS FOR MAC AND LINUX ONLY NOW, WE ARE WORKING ON GETTING IT RUNNING FOR WINDOWS
 
-The prerequisites are mentioned in the requirements.txt. To install the packages run:
+The prerequisites are mentioned in the requirements.txt. 
+
+#### To install the packages run:
 
 pip install -r requirements.txt
 
 
-Install Spacy's english Module by running:
+#### Install Spacy's english Module by running:
 
 python -m spacy download en
 
 
-Install textblob's corpora:  
+#### Install textblob's corpora:  
 
 
 python -m textblob.download_corpora. 
 
-Download nltks's wordnet and stopwords:  
+#### Download nltks's wordnet and stopwords:  
 
 
 nltk.download('wordnet'). 
@@ -39,16 +41,20 @@ nltk.download(' averaged_perceptron_tagger').
 
 To start the server run,  
 
-python UI.py. 
+1. python UI.py. 
 
 
-Navigate to the link specified in the output of the above program. 
+2. Navigate to the link specified in the output of the above program. 
 
+#### Notes
 
-To get the full summary of the paper, enable full summary checkbox.  
-To get summary of specfic sections, mention comma seperated headings in the text book.  
-Query can be specified in its respective text box. 
-Number of sentences for the summary should be specified. 
+1. Once clicking on the upload button, please wait for the file to get uploaded. There is no progess button since the UI is still in progress.  
+
+2. To get the full summary of the paper, enable full summary checkbox.  
+3. To get summary of specfic sections, mention comma seperated headings in the text box.  
+4. Query can be specified in its respective text box. 
+5. Number of sentences for the summary should be specified.  
+6. The summary takes a while (100-140 sec) to get generated.
 
 
 
